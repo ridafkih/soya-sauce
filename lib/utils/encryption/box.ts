@@ -1,4 +1,4 @@
-import { crypto_secretbox_easy } from "chloride";
+import { crypto_secretbox_easy, crypto_secretbox_open_easy } from "chloride";
 import { BOX_NONCEBYTES, HASH_SALTBYTES } from "constants/crypto";
 import { sliceBuffer } from "utils/buffer";
 import { generateRandomBuffer, saltHash } from "utils/crypto";
@@ -19,5 +19,5 @@ export const unbox = (boxed: Buffer, key: Buffer) => {
   const cipher = sliceBuffer(boxed, METADATA_LENGTH);
   const { hash } = saltHash(key, salt);
 
-  return crypto_secretbox_easy(cipher, nonce, hash);
+  return crypto_secretbox_open_easy(cipher, nonce, hash);
 };
