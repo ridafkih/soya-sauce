@@ -4,6 +4,8 @@ import { SecretBox } from "modules/secret-box";
 import { Errors } from "typings/errors";
 
 test("initialized `SecretBox` cannot be initialized again", () => {
+  const MASTER_KEY = "";
+
   it("should throw when `withoutMasterKey` is called twice", () => {
     const initialize = () =>
       new SecretBox().withoutMasterKey().withoutMasterKey();
@@ -12,7 +14,6 @@ test("initialized `SecretBox` cannot be initialized again", () => {
   });
 
   it("should throw when `withMasterKey` is called twice", () => {
-    const MASTER_KEY = "";
     const initialize = () =>
       new SecretBox().withMasterKey(MASTER_KEY).withMasterKey(MASTER_KEY);
 
@@ -20,7 +21,6 @@ test("initialized `SecretBox` cannot be initialized again", () => {
   });
 
   it("should throw when `withMasterKey` is called after `withoutMasterKey`", () => {
-    const MASTER_KEY = "";
     const initialize = () =>
       new SecretBox().withoutMasterKey().withMasterKey(MASTER_KEY);
 
@@ -28,7 +28,6 @@ test("initialized `SecretBox` cannot be initialized again", () => {
   });
 
   it("should throw when `withoutMasterKey` is called after `withMasterKey`", () => {
-    const MASTER_KEY = "";
     const initialize = () =>
       new SecretBox().withMasterKey(MASTER_KEY).withoutMasterKey();
 
