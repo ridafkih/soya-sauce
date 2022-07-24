@@ -6,7 +6,7 @@ import { getKeyBuffer, isValidKeyPair } from "utils/keys";
 import { Errors } from "typings/errors";
 import type { KeyPair } from "typings/key-types";
 
-const extractNonce = (buffer: Buffer) => {
+export const extractNonce = (buffer: Buffer) => {
   if (buffer.byteLength < BOX_NONCEBYTES) throw Error(Errors.BUFFER_TOO_SHORT);
 
   const nonce = sliceBuffer(buffer, 0, BOX_NONCEBYTES);
