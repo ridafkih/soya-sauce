@@ -27,12 +27,20 @@ export const keyPairEncrypt = (buffer: Buffer, pair: KeyPair) => {
   return Buffer.concat([nonce, encrypted]);
 };
 
-export const keyPairDecrypt = (buffer: Buffer, pair: KeyPair) => {
+export const keyPairDecrypt = (cipher: Buffer, pair: KeyPair) => {
   if (!isValidKeyPair(pair)) throw Error(Errors.INVALID_KEY);
-  const { nonce, encrypted } = extractNonce(buffer);
 
+  const { nonce, encrypted } = extractNonce(cipher);
   const publicKey = getKeyBuffer(pair.public);
-  const privateKey = getKeyBuffer(pair.public);
+  const privateKey = getKeyBuffer(pair.private);
 
-  return crypto_box_open_easy(encrypted, nonce, publicKey, privateKey);
+  const decrypted = crypto_box_open_easy(
+    encrypted,
+    nonce,
+    publicKey,
+    privateKey
+  );
+
+  if (!decrypted) throw Error(Errors.DECRYPTION_FAILED);
+  return decrypted;
 };

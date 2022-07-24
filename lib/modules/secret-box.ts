@@ -2,7 +2,7 @@ import { crypto_secretbox_easy, crypto_secretbox_open_easy } from "chloride";
 import { BOX_NONCEBYTES, HASH_SALTBYTES } from "constants/crypto";
 import { sliceBuffer } from "utils/buffer";
 import { generateRandomBuffer, saltHash } from "utils/crypto";
-import { keyPairEncrypt } from "utils/encryption";
+import { keyPairDecrypt, keyPairEncrypt } from "utils/encryption";
 import { isValidKeyPair } from "utils/keys";
 import { Errors } from "typings/errors";
 import { KeyPair } from "typings/key-types";
@@ -28,7 +28,7 @@ export class SecretBox {
     return this.options.key;
   }
 
-  public encrypt(
+  public async encrypt(
     arrayBuffer: WithImplicitCoercion<string | Uint8Array | readonly number[]>,
     pair: KeyPair
   ) {
@@ -45,20 +45,30 @@ export class SecretBox {
       hash
     );
 
-    return keyPairEncrypt(Buffer.concat([salt, nonce, cipherText]), pair);
+    const encrypted = keyPairEncrypt(
+      Buffer.concat([salt, nonce, cipherText]),
+      pair
+    );
+
+    return encrypted;
   }
 
-  public decrypt(encrypted: Buffer, pair: KeyPair) {
+  public async decrypt(buffer: Buffer, pair: KeyPair) {
     if (!isValidKeyPair(pair)) throw Error(Errors.INVALID_KEY);
-    if (!this.usesKey()) return keyPairEncrypt(encrypted, pair);
+    if (!this.usesKey()) return keyPairDecrypt(buffer, pair);
+
+    const encrypted = keyPairDecrypt(buffer, pair);
+    const metaDataLength = HASH_SALTBYTES + BOX_NONCEBYTES;
 
     const salt = sliceBuffer(encrypted, 0, HASH_SALTBYTES);
-    const nonce = sliceBuffer(encrypted, HASH_SALTBYTES, BOX_NONCEBYTES);
-    const cipherText = sliceBuffer(encrypted, HASH_SALTBYTES + BOX_NONCEBYTES);
+    const nonce = sliceBuffer(encrypted, HASH_SALTBYTES, metaDataLength);
+    const cipherText = sliceBuffer(encrypted, metaDataLength);
 
     const { hash } = saltHash(cipherText, salt);
 
     const decrypted = crypto_secretbox_open_easy(encrypted, nonce, hash);
+    if (!decrypted) throw Error(Errors.DECRYPTION_FAILED);
+
     return decrypted;
   }
 }
