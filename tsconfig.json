@@ -8,10 +8,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-		"rootDir": "lib",
 		"baseUrl": "lib",
 		"types": ["node"],
     "typeRoots": ["lib/typings", "./lib/node_modules/@types"]
   },
-  "include": ["lib/**/*"]
+  "include": ["lib/**/*", "./vite.config.ts"]
 }
