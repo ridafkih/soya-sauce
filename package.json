@@ -1,7 +1,7 @@
 {
   "name": "soy-sauce",
   "version": "0.1.0",
-  "description": "",
+  "description": "An easy-to-use, and convenient libsodium wrapper.",
   "main": "index.js",
   "directories": {
     "lib": "lib"
@@ -9,9 +9,9 @@
   "scripts": {
     "build": "tsc --declaration && tsc-alias"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["libsodium", "NaCl", "sodium", "encryption"],
+  "author": "Rida F'kih",
+  "license": "MIT",
   "devDependencies": {
     "@types/chloride": "^2.4.0",
     "@types/node": "^18.0.6",
