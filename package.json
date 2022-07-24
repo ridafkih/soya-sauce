@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc --declaration && tsc-alias",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "c8 vitest --coverage"
   },
   "keywords": [
     "libsodium",
