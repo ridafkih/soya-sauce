@@ -25,7 +25,7 @@ export class SecretBox {
 
   private getKey() {
     if (!this.options.useKey) throw Error(Errors.KEY_NOT_FOUND);
-    return this.options.key;
+    return Buffer.from(this.options.key);
   }
 
   public async encrypt(
@@ -36,7 +36,7 @@ export class SecretBox {
     if (!this.usesKey()) return keyPairEncrypt(Buffer.from(arrayBuffer), pair);
 
     const key = this.getKey();
-    const { salt, hash } = saltHash(Buffer.from(key));
+    const { salt, hash } = saltHash(key);
     const nonce = generateRandomBuffer(BOX_NONCEBYTES);
 
     const cipherText = crypto_secretbox_easy(
@@ -58,15 +58,17 @@ export class SecretBox {
     if (!this.usesKey()) return keyPairDecrypt(buffer, pair);
 
     const encrypted = keyPairDecrypt(buffer, pair);
+
     const metaDataLength = HASH_SALTBYTES + BOX_NONCEBYTES;
 
+    const key = this.getKey();
     const salt = sliceBuffer(encrypted, 0, HASH_SALTBYTES);
     const nonce = sliceBuffer(encrypted, HASH_SALTBYTES, metaDataLength);
     const cipherText = sliceBuffer(encrypted, metaDataLength);
 
-    const { hash } = saltHash(cipherText, salt);
+    const { hash } = saltHash(key, salt);
 
-    const decrypted = crypto_secretbox_open_easy(encrypted, nonce, hash);
+    const decrypted = crypto_secretbox_open_easy(cipherText, nonce, hash);
     if (!decrypted) throw Error(Errors.DECRYPTION_FAILED);
 
     return decrypted;
