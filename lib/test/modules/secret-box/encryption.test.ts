@@ -1,8 +1,9 @@
-import { test, expect } from "vitest";
+import { test, describe, expect } from "vitest";
 
 import { SecretBox } from "modules/secret-box";
 import { generateKeyPair } from "utils/keys";
 import { Errors } from "typings/errors";
+import { PrivateKey, PublicKey } from "typings/key-types";
 
 test("message encrypted with a `SecretBox` initialized without a master key should equal itself when decrypted", async () => {
   const MESSAGE =
@@ -93,5 +94,109 @@ test("two `SecretBox` instances initilized with different master keys do not yie
       public: donna.public,
     });
 
-  expect(decrypt).rejects.toThrow(Errors.DECRYPTION_FAILED);
+  expect(decrypt).rejects.toThrowError(Errors.DECRYPTION_FAILED);
+});
+
+describe("encryption with invalid keys throws error", () => {
+  const MESSAGE =
+    "Sam Wilson (Anthony Mackie) finally gets back Captain America's shield and chooses to accept the mantle.";
+
+  const bucky = generateKeyPair();
+
+  const box = new SecretBox().withoutMasterKey();
+
+  test("should not allow encryption with two private keys", () => {
+    const encrypt = () =>
+      box.encrypt(MESSAGE, {
+        private: bucky.private,
+        public: <PublicKey>bucky.private,
+      });
+
+    expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
+  });
+
+  test("should not allow encryption with two public keys", () => {
+    const encrypt = () =>
+      box.encrypt(MESSAGE, {
+        private: <PrivateKey>bucky.public,
+        public: bucky.public,
+      });
+
+    expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
+  });
+
+  test("should not allow encryption with an invalid public key", () => {
+    const encrypt = () =>
+      box.encrypt(MESSAGE, {
+        private: bucky.private,
+        public: <PublicKey>"vibranium",
+      });
+
+    expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
+  });
+
+  test("should not allow encryption with an invalid private key", () => {
+    const encrypt = () =>
+      box.encrypt(MESSAGE, {
+        private: <PrivateKey>"vibranium",
+        public: bucky.public,
+      });
+
+    expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
+  });
+});
+
+describe("decryption with invalid keys throws error", async () => {
+  const MESSAGE =
+    "Sam Wilson (Anthony Mackie) finally gets back Captain America's shield and chooses to accept the mantle.";
+
+  const bucky = generateKeyPair();
+  const sam = generateKeyPair();
+
+  const box = new SecretBox().withoutMasterKey();
+
+  const encrypted = await box.encrypt(MESSAGE, {
+    private: bucky.private,
+    public: sam.public,
+  });
+
+  test("should not allow decryption with two private keys", () => {
+    const encrypt = () =>
+      box.decrypt(encrypted, {
+        private: bucky.private,
+        public: <PublicKey>bucky.private,
+      });
+
+    expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
+  });
+
+  test("should not allow decryption with two public keys", () => {
+    const encrypt = () =>
+      box.decrypt(encrypted, {
+        private: <PrivateKey>bucky.public,
+        public: bucky.public,
+      });
+
+    expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
+  });
+
+  test("should not allow decryption with an invalid public key", () => {
+    const encrypt = () =>
+      box.decrypt(encrypted, {
+        private: bucky.private,
+        public: <PublicKey>"vibranium",
+      });
+
+    expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
+  });
+
+  test("should not allow decryption with an invalid private key", () => {
+    const encrypt = () =>
+      box.decrypt(encrypted, {
+        private: <PrivateKey>"vibranium",
+        public: bucky.public,
+      });
+
+    expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
+  });
 });
