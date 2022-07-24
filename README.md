@@ -1,7 +1,7 @@
 <div align="center">
-  <h1>Soy Sauce</h1>
+  <h1>Soya Sauce</h1>
   <p>Encryption so simple you can't <i>!@#%</i> it up.</p>
-  <p>Welcome to the Soy Sauce repository. This is a very rudimentary library for data encryption & decryption. It simply wraps the <code>libsodium</code> library, granting a very easy-to-use implementation to its secure API.</p>
+  <p>Welcome to the Soya Sauce repository. This is a very rudimentary library for data encryption & decryption. It simply wraps the <code>libsodium</code> library, granting a very easy-to-use implementation to its secure API.</p>
   	<span>
 		<a href="#prerequisites">Prerequisites</a>
 		<span>&nbsp;&nbsp;·&nbsp;&nbsp;</span>
@@ -31,7 +31,7 @@ brew install sodium libtool autoconf automake
 ```
 
 ```bash
-npm install soy-sauce
+npm install soya-sauce
 ```
 
 ## Usage
@@ -46,7 +46,7 @@ In order to do this, we can generate a private-public key-pair for both Badri an
 While the public key allows you to encrypt a message intended for a recipient, the private key is the only key which allows you to decrypt the message. Granted the private key does not get into the hands of others, messages intended for a recipient cannot be read.
 
 ```ts
-import { SecretBox, generateKeyPair } from "soy-sauce";
+import { SecretBox, generateKeyPair } from "soya-sauce";
 
 const box = new SecretBox().withoutMasterKey();
 
@@ -78,7 +78,7 @@ const akinyi = generateKeyPair();
 If you want to add a master key to this flow, simply initialize the `SecretBox` class using the `withMasterKey` method. This will encrypt each message using a hash generated from the provided text, increasing the resulting time complexity.
 
 ```ts
-import { SecretBox, generateKeyPair } from "soy-sauce";
+import { SecretBox, generateKeyPair } from "soya-sauce";
 
 const box = new SecretBox().withMasterKey("<MASTER_KEY>");
 
