@@ -1,5 +1,10 @@
 import { parseKey } from "utils/keys/parsing";
-import { PrivateKey, PublicKey, SomeKey } from "typings/key-types";
+import type {
+  KeyPair,
+  PrivateKey,
+  PublicKey,
+  SomeKey,
+} from "typings/key-types";
 
 export const isValidKey = (candidate: string): candidate is SomeKey => {
   const { type, key } = parseKey(candidate);
@@ -23,3 +28,6 @@ export const isTypeOfKey = <T extends "public" | "private">(
   const parsedKey = parseKey(candidate);
   return parsedKey.type === type;
 };
+
+export const isValidKeyPair = (pair: KeyPair) =>
+  isTypeOfKey("private", pair.private) && isTypeOfKey("public", pair.public);

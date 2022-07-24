@@ -1,5 +1,5 @@
 import { crypto_box_keypair } from "chloride";
-import { KeyPair } from "typings/key-types";
+import type { KeyPair } from "typings/key-types";
 
 /**
  * Generates an easy-to-store keypair.

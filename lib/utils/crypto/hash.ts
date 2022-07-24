@@ -26,5 +26,5 @@ export const saltHash = (buffer: Buffer, salt?: Buffer) => {
     HASH_ALG_ARGON2ID13
   );
 
-  return Buffer.concat([salt, hash]);
+  return { salt, hash };
 };
