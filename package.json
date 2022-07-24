@@ -1,6 +1,6 @@
 {
   "name": "soya-sauce",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An easy-to-use, and convenient libsodium wrapper.",
   "main": "index.js",
   "directories": {
