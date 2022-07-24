@@ -29,7 +29,7 @@ export class SecretBox {
   }
 
   public encrypt(
-    arrayBuffer: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>,
+    arrayBuffer: WithImplicitCoercion<string | Uint8Array | readonly number[]>,
     pair: KeyPair
   ) {
     if (!isValidKeyPair(pair)) throw Error(Errors.INVALID_KEY);
