@@ -107,5 +107,5 @@ const akinyi = generateKeyPair();
 
 ## Disclaimer
 
-You should know how to properly store, and use secrets before using this library. Usage of this library will not _automagically_ _actually_ make you not !@#% something up.
+You should know how to properly store, share, transmit, generate, and use secrets before using this library. Usage of this library will not _actually automagically_ make you not !@#% something up.
 Proceed with caution, and store user data safely.
