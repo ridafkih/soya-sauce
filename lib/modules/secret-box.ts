@@ -7,31 +7,37 @@ import { isValidKeyPair } from "utils/keys";
 import { Errors } from "typings/errors";
 import { KeyPair } from "typings/key-types";
 
-type SecretBoxOptions =
-  | {
-      useKey: true;
-      key: string;
-    }
-  | {
-      useKey: false;
-    };
-
 export class SecretBox {
-  constructor(private readonly options: SecretBoxOptions) {}
+  private initialized = false;
+  private key?: string;
+
+  public withMasterKey(masterKey: string) {
+    if (this.initialized) throw Error(Errors.ALREADY_INITIALIZED);
+    this.key = masterKey;
+    this.initialized = true;
+    return this;
+  }
+
+  public withoutMasterKey() {
+    if (this.initialized) throw Error(Errors.ALREADY_INITIALIZED);
+    this.initialized = true;
+    return this;
+  }
 
   private usesKey() {
-    return this.options.useKey;
+    return !!this.key;
   }
 
   private getKey() {
-    if (!this.options.useKey) throw Error(Errors.KEY_NOT_FOUND);
-    return Buffer.from(this.options.key);
+    if (!this.key) throw Error(Errors.KEY_NOT_FOUND);
+    return Buffer.from(this.key);
   }
 
   public async encrypt(
     arrayBuffer: WithImplicitCoercion<string | Uint8Array | readonly number[]>,
     pair: KeyPair
   ) {
+    if (!this.initialized) throw Error(Errors.UNINITIALIZED);
     if (!isValidKeyPair(pair)) throw Error(Errors.INVALID_KEY);
     if (!this.usesKey()) return keyPairEncrypt(Buffer.from(arrayBuffer), pair);
 
@@ -54,6 +60,7 @@ export class SecretBox {
   }
 
   public async decrypt(buffer: Buffer, pair: KeyPair) {
+    if (!this.initialized) throw Error(Errors.UNINITIALIZED);
     if (!isValidKeyPair(pair)) throw Error(Errors.INVALID_KEY);
     if (!this.usesKey()) return keyPairDecrypt(buffer, pair);
 

@@ -4,4 +4,6 @@ export enum Errors {
   KEY_NOT_FOUND = "The key does not exist.",
   ENCRYPTION_FAILED = "The encryption failed, a key or key-pair may be invalid.",
   DECRYPTION_FAILED = "The decryption failed, a key or key-pair may be invalid.",
+  UNINITIALIZED = "The SecretBox instance was not initialized, but an encrypt/decrypt call was made.",
+  ALREADY_INITIALIZED = "The SecretBox instance was already initialized, but was initialized again.",
 }
