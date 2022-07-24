@@ -1,7 +1,8 @@
+import { test, expect } from "vitest";
+
 import { SecretBox } from "modules/secret-box";
 import { generateKeyPair } from "utils/keys";
-
-import { test, expect } from "vitest";
+import { Errors } from "typings/errors";
 
 test("message encrypted with a `SecretBox` initialized without a master key should equal itself when decrypted", async () => {
   const MESSAGE =
@@ -86,12 +87,11 @@ test("two `SecretBox` instances initilized with different master keys do not yie
     public: eric.public,
   });
 
-  const decrypted = await decryptionBox
-    .decrypt(encrypted, {
+  const decrypt = () =>
+    decryptionBox.decrypt(encrypted, {
       private: eric.private,
       public: donna.public,
-    })
-    .catch(() => void 0);
+    });
 
-  expect(decrypted?.toString()).toBeUndefined();
+  expect(decrypt).rejects.toThrow(Errors.DECRYPTION_FAILED);
 });
