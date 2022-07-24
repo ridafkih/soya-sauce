@@ -8,4 +8,4 @@ type SliceParameters = Parameters<Uint8Array["slice"]>;
 export const sliceBuffer = (
   buffer: BufferSource,
   ...parameters: SliceParameters
-) => Uint8Array.prototype.slice.call(buffer, ...parameters) as Buffer;
+): Buffer => Uint8Array.prototype.slice.call(buffer, ...parameters) as Buffer;
