@@ -3,8 +3,6 @@
   <p>Encryption so simple you can't <i>!@#%</i> it up.</p>
   <p>Welcome to the Soya Sauce repository. This is a very rudimentary library for data encryption & decryption. It simply wraps the <code>libsodium</code> library, granting a very easy-to-use implementation to its secure API.</p>
   	<span>
-		<a href="#prerequisites">Prerequisites</a>
-		<span>&nbsp;&nbsp;·&nbsp;&nbsp;</span>
 		<a href="#installation">Installation</a>
 		<span>&nbsp;&nbsp;·&nbsp;&nbsp;</span>
 		<a href="#usage">Usage</a>
@@ -14,21 +12,7 @@
 </div>
 <hr>
 
-## Prerequisites
-
-You need to have homebrew installed on your system to install the required libsodium dependencies in order to run this project.
-
-If you don't have homebrew installed, the following command will install it on your MacOS system.
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
 ## Installation
-
-```bash
-brew install sodium libtool autoconf automake
-```
 
 ```bash
 npm install soya-sauce
