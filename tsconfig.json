@@ -12,5 +12,5 @@
 		"types": ["node"],
     "typeRoots": ["lib/typings", "./lib/node_modules/@types"]
   },
-  "include": ["lib/**/*", "./vite.config.ts"]
+  "include": ["lib/**/*"]
 }
