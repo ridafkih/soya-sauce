@@ -1,7 +1,3 @@
-import { crypto_secretbox_easy, crypto_secretbox_open_easy } from "chloride";
-import { BOX_NONCEBYTES, HASH_SALTBYTES } from "constants/crypto";
-import { sliceBuffer } from "utils/buffer";
-import { generateRandomBuffer, saltHash } from "utils/crypto";
 import { box, keyPairDecrypt, keyPairEncrypt, unbox } from "utils/encryption";
 import { isValidKeyPair } from "utils/keys";
 import { Errors } from "typings/errors";

@@ -1,4 +1,4 @@
-import { crypto_box_easy, crypto_box_open_easy } from "chloride";
+import { crypto_box_easy, crypto_box_open_easy, crypto_box_MACBYTES } from "sodium-native";
 import { BOX_NONCEBYTES } from "constants/crypto";
 import { sliceBuffer } from "utils/buffer";
 import { generateRandomBuffer } from "utils/crypto";
@@ -22,7 +22,8 @@ export const keyPairEncrypt = (buffer: Buffer, pair: KeyPair) => {
   const publicKey = getKeyBuffer(pair.public);
   const privateKey = getKeyBuffer(pair.private);
 
-  const encrypted = crypto_box_easy(buffer, nonce, publicKey, privateKey);
+  const encrypted = Buffer.alloc(buffer.length + crypto_box_MACBYTES);
+  crypto_box_easy(encrypted, buffer, nonce, publicKey, privateKey);
 
   return Buffer.concat([nonce, encrypted]);
 };
@@ -34,13 +35,16 @@ export const keyPairDecrypt = (cipher: Buffer, pair: KeyPair) => {
   const publicKey = getKeyBuffer(pair.public);
   const privateKey = getKeyBuffer(pair.private);
 
-  const decrypted = crypto_box_open_easy(
+  const decrypted = Buffer.alloc(encrypted.length - crypto_box_MACBYTES);
+  
+  const success = crypto_box_open_easy(
+    decrypted,
     encrypted,
     nonce,
     publicKey,
     privateKey
   );
 
-  if (!decrypted) throw Error(Errors.DECRYPTION_FAILED);
+  if (!success) throw Error(Errors.DECRYPTION_FAILED);
   return decrypted;
 };

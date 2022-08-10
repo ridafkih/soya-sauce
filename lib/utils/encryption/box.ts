@@ -1,14 +1,16 @@
-import { crypto_secretbox_easy, crypto_secretbox_open_easy } from "chloride";
+import { crypto_secretbox_easy, crypto_secretbox_MACBYTES, crypto_secretbox_open_easy } from "sodium-native";
 import { BOX_NONCEBYTES, HASH_SALTBYTES } from "constants/crypto";
 import { sliceBuffer } from "utils/buffer";
 import { generateRandomBuffer, saltHash } from "utils/crypto";
+import { Errors } from "typings/errors";
 
 const METADATA_LENGTH = HASH_SALTBYTES + BOX_NONCEBYTES;
 
 export const box = (buffer: Buffer, key: Buffer) => {
   const { salt, hash } = saltHash(key);
   const nonce = generateRandomBuffer(BOX_NONCEBYTES);
-  const cipher = crypto_secretbox_easy(buffer, nonce, hash);
+  const cipher = Buffer.alloc(buffer.length + crypto_secretbox_MACBYTES);
+  crypto_secretbox_easy(cipher, buffer, nonce, hash);
 
   return Buffer.concat([salt, nonce, cipher]);
 };
@@ -19,5 +21,9 @@ export const unbox = (boxed: Buffer, key: Buffer) => {
   const cipher = sliceBuffer(boxed, METADATA_LENGTH);
   const { hash } = saltHash(key, salt);
 
-  return crypto_secretbox_open_easy(cipher, nonce, hash);
+  const unboxed = Buffer.alloc(cipher.length - crypto_secretbox_MACBYTES);
+  const success = crypto_secretbox_open_easy(unboxed, cipher, nonce, hash);
+
+  if (!success) throw Error(Errors.DECRYPTION_FAILED);
+  return unboxed;
 };

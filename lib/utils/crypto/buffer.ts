@@ -1,7 +1,7 @@
-import { randombytes } from "chloride";
+import { randombytes_buf } from "sodium-native";
 
 export const generateRandomBuffer = (length: number) => {
   const buffer = Buffer.alloc(length);
-  randombytes(buffer);
+  randombytes_buf(buffer);
   return buffer;
 };

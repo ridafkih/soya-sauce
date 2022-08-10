@@ -1,4 +1,4 @@
-import { crypto_box_keypair } from "chloride";
+import { crypto_box_keypair, crypto_box_SECRETKEYBYTES, crypto_box_PUBLICKEYBYTES } from "sodium-native";
 import type { KeyPair } from "typings/key-types";
 
 /**
@@ -6,7 +6,9 @@ import type { KeyPair } from "typings/key-types";
  * @returns A keypair object.
  */
 export const generateKeyPair = (): KeyPair => {
-  const { publicKey, secretKey } = crypto_box_keypair();
+  const publicKey = Buffer.alloc(crypto_box_PUBLICKEYBYTES);
+  const secretKey = Buffer.alloc(crypto_box_SECRETKEYBYTES);
+  crypto_box_keypair(publicKey, secretKey);
 
   return Object.freeze({
     private: `private$${secretKey.toString("base64")}`,
