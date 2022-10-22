@@ -200,3 +200,16 @@ describe("decryption with invalid keys throws error", async () => {
     expect(encrypt).rejects.toThrowError(Errors.INVALID_KEY);
   });
 });
+
+test("should be able to encrypt without public keys, granted a master key is provided", async () => {
+  const masterKeyBox = new SecretBox({ disableKeyPairs: true }).withMasterKey("vibranium");
+  const cipherText = await masterKeyBox.encrypt("Wakanda");
+  expect(cipherText).toBeInstanceOf(Buffer);
+});
+
+test("should be able to decrypt without public keys, granted a master key is provided", async () => {
+  const WAKANDA_CIPHERTEXT = Buffer.from("444e9477420b29105b5c8b0b3c97ac2d3c7fcfcf82022c1477854655beb7877d3a27bba8f08e155587cc32e83688a3216ba1f11f6dcce97ca659f5190b2bb4", "hex");
+  const masterKeyBox = new SecretBox({ disableKeyPairs: true }).withMasterKey("vibranium");
+  const decrypted = await masterKeyBox.decrypt(WAKANDA_CIPHERTEXT);
+  expect(decrypted.toString()).toBe("Wakanda");
+});

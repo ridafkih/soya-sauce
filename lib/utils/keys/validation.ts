@@ -29,5 +29,7 @@ export const isTypeOfKey = <T extends "public" | "private">(
   return parsedKey.type === type;
 };
 
-export const isValidKeyPair = (pair: KeyPair) =>
-  isTypeOfKey("private", pair.private) && isTypeOfKey("public", pair.public);
+export const isValidKeyPair = (pair?: KeyPair): pair is KeyPair => {
+  if (!pair?.private || !pair.public) return false;
+  return isTypeOfKey("private", pair.private) && isTypeOfKey("public", pair.public);
+}
